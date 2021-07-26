@@ -6,12 +6,13 @@ import matplotlib
 
 from fixatDetection import *
 from fixColor import *
+from pupil import *
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
-#Funzione per stampare il file fixation.csv sulla console
+#Funzione per stampare il file pupil.csv sulla console
 def readFileFix():
-    csv_file = 'out/fixation.csv'
+    csv_file = 'out/pupil.csv'
     data = pd.read_csv(csv_file)
     print(data)
 
@@ -25,6 +26,10 @@ def readData(char):
         positionY = []
         positionZ = []
         time = []
+        eyeLFdiameter = []
+        eyeRGdiameter = []
+        averageLFRG = []
+        TotalAverageLFandRG = []
 
         # Loop per leggere ogni riga nel file
         for data in f1:
@@ -36,45 +41,66 @@ def readData(char):
             timestamp = d.get('timestamp')
             gaze2d = d.get('data', {}).get('gaze2d')
             gaze3d = d.get('data', {}).get('gaze3d')
-
+            eyeleftdiameter = d.get('data', {}).get('eyeleft', {}).get('pupildiameter')
+            eyerightdiameter = d.get('data', {}).get('eyeright', {}).get('pupildiameter')
+        
             # Controllo se il campo gaze3d è vuoto
             # Se lo è assegno alle liste il valore 0
             # Altrimenti assegno i valori delle variabili
+
+            if eyeleftdiameter == None:
+                 eyeLFdiameter.append(0)  # lista eyelfdiameter
+            else:
+                 eyeLFdiameter.append(eyeleftdiameter)  # lista eyelfdiameter
+
+            if eyerightdiameter == None:
+                 eyeRGdiameter.append(0)  # lista eyelfdiameter
+            else:
+                 eyeRGdiameter.append(eyerightdiameter)  # lista eyelfdiameter
+
             if gaze3d == None:
                 positionX.append(0)
                 positionY.append(0)
                 positionZ.append(0)
-                time.append(0)
             else:
                 positionX.append(gaze2d[0])  # lista coordinata x
                 positionY.append(gaze2d[1])  # lista coordinata y
                 positionZ.append(gaze3d[2])  # lista coordinata z
                 time.append(timestamp)  # lista timestamp
 
-        # Richiamo la funzione fixation per computare le fissazioni
-        Efix1 = fixation(positionX, positionY, positionZ, time)
-        res1 = [i[0] for i in Efix1]  # restituisce il numero di fissazioni
-        res2 = [i[1] for i in Efix1]  # restituisce il tempo iniziale
-        res3 = [i[2] for i in Efix1]  # restituisce la durata
-        res4 = [i[3] for i in Efix1]  # restituisce la posizione x
-        res5 = [i[4] for i in Efix1]  # restituisce la posizione y
-        res6 = [i[5] for i in Efix1]  # restituisce la posizione z
-
+        # for per iterare su ciascun diametro di ogni istante
+        for diamLF,diamRG in zip(eyeLFdiameter,eyeRGdiameter):
+            averageLFRG.append(averageLeftAndRight(diamLF,diamRG))
+        
+        minAndMaxDiameter = minLeftAndRight(eyeLFdiameter,eyeRGdiameter)
+ 
         # fields è una lista avente i nomi dei campi del nuovo file csv
-        fields = ['numFixat', 'startTime', 'duration', 'position_X', 'position_Y', 'position_Z']
+        fields = ['Timestamp','EyeLeftDiameter','EyeRightDiameter','AverageLeftAndRight']
 
-        # Creazione e apertura del file di nome fixation.csv
-        with open('out/fixation.csv', 'w', newline="") as cvs:
+        # Creazione e apertura del file di nome pupil.csv
+        with open('out/pupil.csv', 'w', newline="") as cvs:
 
             # w è una dictionary con i campi della lista fields
-            w = csv.DictWriter(cvs, fieldnames=fields)
+            w = csv.DictWriter(cvs, fieldnames=fields, delimiter=',')
             w.writeheader()
 
             # Loop per inserire i valori delle liste nei campi del dictionary
-            for n, s, du, x, y, z in zip(res1, res2, res3, res4, res5, res6):
-                raw = {'numFixat': n, 'startTime': s, 'duration': du, 'position_X': x, 'position_Y': y,
-                     'position_Z': z}
-                w.writerow(raw)
+            for stime,diamLF,diamRG, average in zip(time,eyeLFdiameter,eyeRGdiameter, averageLFRG):
+               raw = {'Timestamp':stime, 'EyeLeftDiameter': diamLF, 'EyeRightDiameter': diamRG, 'AverageLeftAndRight':average}
+               w.writerow(raw)
+            
+        # Apertura del file di nome pupil.csv in modalità append
+        with open(r'out/pupil.csv', 'a', newline='') as csvfile:
+
+            # fieldnames è una lista avente i nomi dei campi per l'append
+            fieldnames = ['TotalAverageLeft','TotalAverageRight','TotalAverageLFandRG','MinDiameterLeft','MinDiameterRight','MaxDiameterLeft','MaxDiameterRight']
+
+            # writer è una dictionary con i campi della lista fieldnames
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames, delimiter='\t')
+            writer.writeheader()
+            
+            # Inserisco i valori nei campi del dictionary
+            writer.writerow({'TotalAverageLeft': averangeTotal(eyeLFdiameter),'TotalAverageRight': averangeTotal(eyeRGdiameter), 'TotalAverageLFandRG':averangeLFRGTotal(averangeTotal(eyeLFdiameter),averangeTotal(eyeRGdiameter)),'MinDiameterLeft':minAndMaxDiameter[0],'MinDiameterRight':minAndMaxDiameter[1],'MaxDiameterLeft':minAndMaxDiameter[2],'MaxDiameterRight':minAndMaxDiameter[3]})
 
         readFileFix()
         cvs.close()  # Chiusura del file
@@ -85,7 +111,7 @@ def graficFix(nImg, scene):
     
     print("All'utente verranno mostrate %d immagini" % nImg)
     # dati del grafico fixation
-    csv_file = 'out/fixation.csv'
+    csv_file = 'out/pupil.csv'
     # Salvo in un dataFrame il file letto
     dataFrame = pd.read_csv(csv_file)
     # Salvo in un array i valori dei campi che dovrò utilizzare
