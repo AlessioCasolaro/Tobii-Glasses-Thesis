@@ -15,6 +15,9 @@ def readFileFix():
     csv_file = 'out/pupil.csv'
     data = pd.read_csv(csv_file)
     print(data)
+    csv_file2 = 'out/pupilsStatistics.csv'
+    data2 = pd.read_csv(csv_file)
+    print(data2)
 
 # Funzione utilizzata per leggere i dati del file gazedata.gz e scrivere un nuovo file .csv
 def readData(char):
@@ -90,13 +93,13 @@ def readData(char):
                w.writerow(raw)
             
         # Apertura del file di nome pupil.csv in modalità append
-        with open(r'out/pupil.csv', 'a', newline='') as csvfile:
+        with open('out/pupilsStatistics.csv', 'w', newline="") as csvfile:
 
             # fieldnames è una lista avente i nomi dei campi per l'append
             fieldnames = ['TotalAverageLeft','TotalAverageRight','TotalAverageLFandRG','MinDiameterLeft','MinDiameterRight','MaxDiameterLeft','MaxDiameterRight']
 
             # writer è una dictionary con i campi della lista fieldnames
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames, delimiter='\t')
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
             
             # Inserisco i valori nei campi del dictionary
@@ -115,10 +118,10 @@ def graficFix(nImg, scene):
     # Salvo in un dataFrame il file letto
     dataFrame = pd.read_csv(csv_file)
     # Salvo in un array i valori dei campi che dovrò utilizzare
-    data = dataFrame.iloc[:, [1, 2, 3, 4, 5]].values
+    data = dataFrame.iloc[:, [1, 2, 3]].values
     s = 1
     time = [element for element in data[:, 0]]
-    z1 = [element for element in data[: ,4]]
+    z1 = [element for element in data[: ,2]]
     time2 = []
     smin = 0
     w=0
@@ -157,10 +160,10 @@ def graficFix(nImg, scene):
             if t <= scene[s]:
                 time2.append(t)
 
-        x = [element * width for element in data[smin:len(time2), 2]]       # x contiene gli elementi della colonna 2 di data dal tempo minimo al tempo massimo
-        y = [element * height for element in data[smin:len(time2),3]]       # y contiene gli elementi della colonna 3 di data dal tempo minimo al tempo massimo
-        z = [element for element in data[smin:len(time2),4]]                # z contiene gli elementi della colonna 4 di data dal tempo minimo al tempo massimo
-        dur = [element for element in data[smin:len(time2),1]]              # dur contiene gli elementi della colonna 1 di data dal tempo minimo al tempo massimo
+        x = [element * width for element in data[smin:len(time2), 0]]       # x contiene gli elementi della colonna 2 di data dal tempo minimo al tempo massimo
+        y = [element * height for element in data[smin:len(time2),1]]       # y contiene gli elementi della colonna 3 di data dal tempo minimo al tempo massimo
+        z = [element for element in data[smin:len(time2),2]]                # z contiene gli elementi della colonna 4 di data dal tempo minimo al tempo massimo
+        dur = [element for element in data[smin:len(time2),0]]              # dur contiene gli elementi della colonna 1 di data dal tempo minimo al tempo massimo
         time3 = [element for element in data[smin:len(time2),0]]            # dur contiene gli elementi della colonna 0 di data dal tempo minimo al tempo massimo
 
         # Utilizzato per restituire il tempo massimo del video

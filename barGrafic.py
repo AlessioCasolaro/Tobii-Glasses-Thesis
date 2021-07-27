@@ -17,49 +17,72 @@ def openGazeData(char):
             d = json.loads(data)
             timestamp = d.get('timestamp')
             time.append(timestamp)
-        listTime = []
-        listTime.append(0)
-        inter = []
-        # L'utente deve scegliere quanti intervalli temporali vuole
-        num = int(input("Quanti intervalli: "))
-        for i in range(num):
-            for j in time:
-                maxTime = round(j, 1)
-            print("Scegli tra %s e %s:" % (listTime[i], maxTime))
-            if i == num - 1:
-                helpTime = maxTime
-            else:
-                helpTime = float(input("Digita: "))
-            numTime = (str(listTime[i]) + '-' + str(helpTime))
-            listTime.append(helpTime)
-            inter.append(numTime)
-    return inter, listTime
+        
+
+        print("Scegli un intervallo di tempo tra %s e %s:" % (time[0],time[len(time)-1]))
+        rangeMin = float(input("Digita intervallo minore: "))
+        rangeMax = float(input("Digita intervallo Maggiore: "))
+        print(rangeMin,rangeMax)
+        
+    return rangeMin,rangeMax
 
 
-# Funzione che restituisce il grafico della durata di ogni fissazione
-def barGraphDurFix():
-    dataFrame = pd.read_csv('out/fixation.csv')             # Lettura del file .csv e salvataggio del dataframe
-    data = dataFrame.iloc[:, [0, 2]].values                 # Prendo i valori che mi serviranno dal dataframe
-    fig, ax = plt.subplots(num='Durata Fissazioni', figsize=(12, 8))                 # Creo una figura con dimensione 1.200 e 800
-    # Loop per creare liste 'dur' e 'nF': lista delle durate di ogni fissazione e lista del numero di fissazioni
-    for i in range(len(data[1])):
-        dur = [element for element in data[:, 1]]
-        listForMaxDur = [element for element in data[: ,1]]
-        numF = [element for element in data[:, 0]]
-    listForMaxDur.sort()
-    for j in range(len(listForMaxDur)):
-        maxDur = listForMaxDur[j]
-    # Loop per annotare il valore della durata per ogni fissazione
+# Funzione che restituisce il grafico della media dell'occhio sinistro e destro combinati all'interno di un intervallo di tempo specificato
+def barGraphAvgLFandRG(rangeMin,rangeMax):
+    dataFrame = pd.read_csv('out/pupil.csv')             # Lettura del file .csv e salvataggio del dataframe
+    data = dataFrame.iloc[:, [0,3]].values                 # Prendo i valori che mi serviranno dal dataframe
+    fig, ax = plt.subplots(num='Media tra occhio destro e sinistro', figsize=(12, 8))                 # Creo una figura con dimensione 1.200 e 800
 
-    for i in range(len(numF)):
-        plt.bar(numF[i], dur[i])
-    #plt.bar(numF, dur)
+    rangeSelected = []#Lista con i valori del range scelto
+    rangeTempSelected = [element for element in data[:, 0]]#Lista temporanea di tutti i range
+    index = []#Indice del range
+    averageTemp = [element for element in data[:, 1]]#Lista temporanea di tutte le medie
+    average = []#Lista con le medie all'interno del range
+
+    #Loop per trovarmi i valori del range scelto e per salvare i loro indici 
+    for element in rangeTempSelected:
+        if(rangeMin<=element<=rangeMax):
+            rangeSelected.append(element)
+            index.append(rangeTempSelected.index(element))
+    
+   
+    for elem in rangeSelected:# Loop per prenderere elementi dal range selezionato
+        for i in index:# Loop per prenderere elementi dall'indice del range
+            if(elem == rangeTempSelected[i]):# Se l'elemento preso è uguale all'elemento i-esimo nella lista temporanea di tutti range
+                for elemAvg in averageTemp: # Loop per prendere elementi dalla lista di tutte le medie
+                    if(elemAvg == averageTemp[i]): # Se l'elemento preso è nell' iesima posizione abbiamo che la media ha lo stesso indice dell'indice del range
+                        average.append(elemAvg)# Lista con i valori medi nel range selezionato
+    
+    #Print
+    print(rangeSelected)
+    print(index)
+    print(average)   
+ 
+    numBar = np.arange(len(average))
+    # Genera Le barre
+    bar_plot = plt.bar(numBar,average,width=0.5)
+    
+    # Ruota le label dell'asse x di 90 gradi
+    plt.xticks([r for r in numBar], rangeSelected, rotation=90)
+    
+    
+    # Funzione per generare le label sulle bar
+    def autolabel(rects):
+        for idx,rect in enumerate(bar_plot):
+            height = rect.get_height()
+            ax.text(rect.get_x() + rect.get_width()/2., 0.5*height,
+                    average[idx],
+                    ha='center', va='bottom', rotation=90)
+    autolabel(bar_plot)
+
+    
+
     # Dettagli del grafico
-    plt.ylim(0, maxDur+2)
-    plt.xlim(0, numF[i]+2)
-    plt.ylabel('Durata (s)',fontweight='bold', fontsize=15)
-    plt.xlabel('Fissazioni',fontweight='bold', fontsize=15)
-    fig.savefig('grafic/graficDurFix.jpg')
+    plt.subplots_adjust(bottom= 0.2, top = 0.98)# Regola i margini
+    plt.ylabel('Media occhio DX e SX',fontweight='bold', fontsize=15)
+    plt.xlabel('Intervallo',fontweight='bold', fontsize=15)
+    fig.savefig('grafic/graficAverageLeftAndRight.jpg')
+    plt.grid()
     plt.show()
 
 # Funzione che restituisce il grafico del numero delle fissazioni
@@ -217,7 +240,7 @@ def barGraphAoiDominant(listTime, timePoint):
 def chooseGraph(char,scene):
     while True:
         print('''Quale grafico vuoi creare e visualizzare?
-        1. Grafico a barre per la durata delle fissazioni
+        1. Grafico a barre per la media dell'occhio sinistro e destro nel tempo
         2. Grafico a barre per il numero di fissazioni nel tempo
         3. Grafico a barre per il numero di aree di interesse nel tempo
         4. Grafico a barre per l' AOI dominante nel tempo
@@ -226,8 +249,8 @@ def chooseGraph(char,scene):
 
         choose = input("Digita l'opzione scelta: ")
         if choose == str(1):
-            print("Durata delle fissazioni")
-            barGraphDurFix()
+            rangeMin,rangeMax = openGazeData(char)
+            barGraphAvgLFandRG(rangeMin,rangeMax)
         elif choose == str(2):
             print("Numero di fissazioni nel tempo")
             inter, listTime = openGazeData(char)
