@@ -111,7 +111,7 @@ def readData(char):
 
 # Funzione per creare e visualizzare il grafico delle fissazioni
 def graficFix(nImg, scene):
-    
+
     print("All'utente verranno mostrate %d immagini" % nImg)
     # dati del grafico fixation
     csv_file = 'out/pupil.csv'
