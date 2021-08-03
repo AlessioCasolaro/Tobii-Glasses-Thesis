@@ -8,7 +8,7 @@ from aoi import *
 
 
 # Funzione creata per leggere i valori del file gazedata del video corrispondente
-# Restituisce il numero di intervalli e la lista dei valori dell' intervallo di tempo
+# Restituisce l'intervallo di tempo
 def openGazeData(char):
 
     with gzip.open('dataGaze/gazedata'+str(char)+'.gz') as f1:

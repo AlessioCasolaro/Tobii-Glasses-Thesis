@@ -16,7 +16,7 @@ def readFileFix():
     data = pd.read_csv(csv_file)
     print(data)
     csv_file2 = 'out/pupilsStatistics.csv'
-    data2 = pd.read_csv(csv_file)
+    data2 = pd.read_csv(csv_file2)
     print(data2)
 
 # Funzione utilizzata per leggere i dati del file gazedata.gz e scrivere un nuovo file .csv
@@ -57,9 +57,9 @@ def readData(char):
                  eyeLFdiameter.append(eyeleftdiameter)  # lista eyelfdiameter
 
             if eyerightdiameter == None:
-                 eyeRGdiameter.append(0)  # lista eyelfdiameter
+                 eyeRGdiameter.append(0)  # lista eyergdiameter
             else:
-                 eyeRGdiameter.append(eyerightdiameter)  # lista eyelfdiameter
+                 eyeRGdiameter.append(eyerightdiameter)  # lista eyergdiameter
 
             if gaze3d == None:
                 positionX.append(0)
