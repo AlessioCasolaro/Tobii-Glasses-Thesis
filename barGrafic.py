@@ -110,7 +110,7 @@ def barGraphAvgLFandRG(rangeMin,rangeMax):
     bar_plot = plt.bar(numBar,average,width=0.5) 
     
     # Ruota le label dell'asse x di 90 gradi
-    plt.xticks([r for r in numBar], rangeSelected#QUI, rotation=90) 
+    plt.xticks([r for r in numBar], rangeSelected, rotation=90) 
     
     
     # Funzione per generare le label sulle bar
@@ -118,7 +118,7 @@ def barGraphAvgLFandRG(rangeMin,rangeMax):
         for idx,rect in enumerate(bar_plot):
             height = rect.get_height()
             ax.text(rect.get_x() + rect.get_width()/2., 0.5*height,
-                    average[idx]#QUI,
+                    round(average[idx], 4),
                     ha='center', va='bottom', rotation=90)
     autolabel(bar_plot)
 
