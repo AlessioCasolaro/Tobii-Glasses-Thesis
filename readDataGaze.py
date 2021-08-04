@@ -32,7 +32,7 @@ def readData(char):
         eyeLFdiameter = []
         eyeRGdiameter = []
         averageLFRG = []
-        TotalAverageLFandRG = []
+       
 
         # Loop per leggere ogni riga nel file
         for data in f1:
@@ -47,20 +47,22 @@ def readData(char):
             eyeleftdiameter = d.get('data', {}).get('eyeleft', {}).get('pupildiameter')
             eyerightdiameter = d.get('data', {}).get('eyeright', {}).get('pupildiameter')
         
-            # Controllo se il campo gaze3d è vuoto
-            # Se lo è assegno alle liste il valore 0
+            time.append(timestamp)  # lista timestamp
+
+            # Controllo se icampi sono vuoti
+            # Se lo sono assegno alle liste il valore 0
             # Altrimenti assegno i valori delle variabili
-
-            if eyeleftdiameter == None:
-                 eyeLFdiameter.append(0)  # lista eyelfdiameter
+            
+            if eyeleftdiameter is None:
+                eyeLFdiameter.append(0)  # lista eyelfdiameter
             else:
-                 eyeLFdiameter.append(eyeleftdiameter)  # lista eyelfdiameter
+                eyeLFdiameter.append(eyeleftdiameter)  # lista eyelfdiameter
 
-            if eyerightdiameter == None:
-                 eyeRGdiameter.append(0)  # lista eyergdiameter
+            if eyerightdiameter is None:
+                eyeRGdiameter.append(0)  # lista eyergdiameter
             else:
-                 eyeRGdiameter.append(eyerightdiameter)  # lista eyergdiameter
-
+                eyeRGdiameter.append(eyerightdiameter)  # lista eyergdiameter
+            
             if gaze3d == None:
                 positionX.append(0)
                 positionY.append(0)
@@ -69,12 +71,15 @@ def readData(char):
                 positionX.append(gaze2d[0])  # lista coordinata x
                 positionY.append(gaze2d[1])  # lista coordinata y
                 positionZ.append(gaze3d[2])  # lista coordinata z
-                time.append(timestamp)  # lista timestamp
-
+            
+            
+       
         # for per iterare su ciascun diametro di ogni istante
         for diamLF,diamRG in zip(eyeLFdiameter,eyeRGdiameter):
             averageLFRG.append(averageLeftAndRight(diamLF,diamRG))
         
+        print("Numero timestamp %d   Sinistro %d    Destro %d     Avg %d",(len(time),len(eyeLFdiameter),len(eyeLFdiameter),len(averageLFRG)))
+        print(eyeLFdiameter)
         minAndMaxDiameter = minLeftAndRight(eyeLFdiameter,eyeRGdiameter)
  
         # fields è una lista avente i nomi dei campi del nuovo file csv

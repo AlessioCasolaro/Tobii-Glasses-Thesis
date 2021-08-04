@@ -12,7 +12,7 @@ def chooseGraph(char,scene):
     while True:
         print('''Quale grafico vuoi creare e visualizzare?
         1. Grafico a barre per la media dell'occhio sinistro e destro nel tempo
-        2. Grafico a barre per la media dell'occhio sinistro e destro nel tempo
+        2. Grafico a barre per la media dell'occhio sinistro e destro per ogni scena
         NO. Grafico a barre per il numero di fissazioni nel tempo
         NO. Grafico a barre per il numero di aree di interesse nel tempo
         NO. Grafico a barre per l' AOI dominante nel tempo
@@ -83,9 +83,11 @@ def barGraphAvgLFandRG(rangeMin,rangeMax):
 
     #Loop per trovarmi i valori del range scelto e per salvare i loro indici 
     for element in rangeTempSelected:
+        print("Elemento corrente %f" %element)
         if(rangeMin<=element<=rangeMax):
             rangeSelected.append(element)
             index.append(rangeTempSelected.index(element))
+            
     
    
   #  for elem in rangeSelected:# Loop per prenderere elementi dal range selezionato
@@ -110,7 +112,7 @@ def barGraphAvgLFandRG(rangeMin,rangeMax):
     bar_plot = plt.bar(numBar,average,width=0.5) 
     
     # Ruota le label dell'asse x di 90 gradi
-    plt.xticks([r for r in numBar], rangeSelected, rotation=90) 
+    plt.xticks([r for r in numBar], np.round(rangeSelected,2), rotation=90) 
     
     
     # Funzione per generare le label sulle bar
