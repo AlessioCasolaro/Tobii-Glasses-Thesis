@@ -5,7 +5,7 @@
 #Dimenesione medie occhio destro e sinistro totale
 #Dimensione massima occhio sinistro e occhio destro
 #Dimensione minima occhio sinistro e occhio destro
-
+#Cacolo Velocità media dilatazione
 
 #Dimensioni medie pupille occhio destro e sinistro combinati
 def averageLeftAndRight(diameterLF,diameterRG):
@@ -25,10 +25,15 @@ def averangeLFRGTotal(averageTotalLF,averageTotalLFRG):
 
 #Dimensione massima occhio sinistro e occhio destro
 #Dimensione minima occhio sinistro e occhio destro
-def minLeftAndRight(diameterLF,diameterRG):
+def minmaxLeftAndRight(diameterLF,diameterRG):
     minDiameterLF = min([value for value in diameterLF if value!=0])
     minDiameterRG = min([value for value in diameterRG if value!=0])
     maxDiameterLF = max(diameterLF)
     maxDiameterRG = max(diameterRG)
 
     return minDiameterLF,minDiameterRG,maxDiameterLF,maxDiameterRG
+
+
+#Cacolo Velocità media dilatazione
+def avgDilatationSpeed(initialDil,finalDil,initialT,finalT):
+    return (finalDil-initialDil)/(finalT-initialT)

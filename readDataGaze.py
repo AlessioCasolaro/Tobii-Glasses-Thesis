@@ -76,11 +76,12 @@ def readData(char):
        
         # for per iterare su ciascun diametro di ogni istante
         for diamLF,diamRG in zip(eyeLFdiameter,eyeRGdiameter):
-            averageLFRG.append(averageLeftAndRight(diamLF,diamRG))
+            averageLFRG.append(averageLeftAndRight(diamLF,diamRG))#Calcolo media per ogni istante
         
-        print("Numero timestamp %d   Sinistro %d    Destro %d     Avg %d",(len(time),len(eyeLFdiameter),len(eyeLFdiameter),len(averageLFRG)))
-        print(eyeLFdiameter)
-        minAndMaxDiameter = minLeftAndRight(eyeLFdiameter,eyeRGdiameter)
+        print("Numero timestamp    Sinistro     Destro      Avg ",(len(time),len(eyeLFdiameter),len(eyeLFdiameter),len(averageLFRG)))
+        minAndMaxDiameter = minmaxLeftAndRight(eyeLFdiameter,eyeRGdiameter)#Chiamata a funzione per il cacolo del minimo e massimo
+        avgDilatationSpeedLF = avgDilatationSpeed(eyeLFdiameter[0],eyeLFdiameter[len(eyeLFdiameter)-1],time[0],time[len(time)-1])#Calcolo velocità dilatazione media occhio sinistro
+        avgDilatationSpeedRG = avgDilatationSpeed(eyeRGdiameter[0],eyeRGdiameter[len(eyeRGdiameter)-1],time[0],time[len(time)-1])#Calcolo velocità dilatazione media occhio destro
  
         # fields è una lista avente i nomi dei campi del nuovo file csv
         fields = ['Timestamp','EyeLeftDiameter','EyeRightDiameter','AverageLeftAndRight']
@@ -101,17 +102,26 @@ def readData(char):
         with open('out/pupilsStatistics.csv', 'w', newline="") as csvfile:
 
             # fieldnames è una lista avente i nomi dei campi per l'append
-            fieldnames = ['TotalAverageLeft','TotalAverageRight','TotalAverageLFandRG','MinDiameterLeft','MinDiameterRight','MaxDiameterLeft','MaxDiameterRight']
+            fieldnames = ['TotalAverageLeft','TotalAverageRight','TotalAverageLFandRG','MinDiameterLeft','MinDiameterRight','MaxDiameterLeft','MaxDiameterRight','AvgDilatationSpeedLeft','AvgDilatationSpeedRight']
 
             # writer è una dictionary con i campi della lista fieldnames
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
             
             # Inserisco i valori nei campi del dictionary
-            writer.writerow({'TotalAverageLeft': averangeTotal(eyeLFdiameter),'TotalAverageRight': averangeTotal(eyeRGdiameter), 'TotalAverageLFandRG':averangeLFRGTotal(averangeTotal(eyeLFdiameter),averangeTotal(eyeRGdiameter)),'MinDiameterLeft':minAndMaxDiameter[0],'MinDiameterRight':minAndMaxDiameter[1],'MaxDiameterLeft':minAndMaxDiameter[2],'MaxDiameterRight':minAndMaxDiameter[3]})
+            writer.writerow({'TotalAverageLeft': averangeTotal(eyeLFdiameter),'TotalAverageRight': averangeTotal(eyeRGdiameter), 
+            'TotalAverageLFandRG':averangeLFRGTotal(averangeTotal(eyeLFdiameter),averangeTotal(eyeRGdiameter)),'MinDiameterLeft':minAndMaxDiameter[0],
+            'MinDiameterRight':minAndMaxDiameter[1],'MaxDiameterLeft':minAndMaxDiameter[2],'MaxDiameterRight':minAndMaxDiameter[3],
+            'AvgDilatationSpeedLeft':avgDilatationSpeedLF,'AvgDilatationSpeedRight':avgDilatationSpeedRG})
 
         readFileFix()
         cvs.close()  # Chiusura del file
+
+
+#FUNZIONE PER STAMPARE FISSAZIONI
+
+
+#CREARE FUNZIONE PER GENERARE FISSAZIONI
 
 
 # Funzione per creare e visualizzare il grafico delle fissazioni
@@ -119,7 +129,7 @@ def graficFix(nImg, scene):
 
     print("All'utente verranno mostrate %d immagini" % nImg)
     # dati del grafico fixation
-    csv_file = 'out/pupil.csv'
+    csv_file = 'out/fixation.csv'
     # Salvo in un dataFrame il file letto
     dataFrame = pd.read_csv(csv_file)
     # Salvo in un array i valori dei campi che dovrò utilizzare

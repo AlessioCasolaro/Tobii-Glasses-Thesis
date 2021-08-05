@@ -75,21 +75,19 @@ def barGraphAvgLFandRG(rangeMin,rangeMax):
 
     print("I range sono %f e %f" %(rangeMin,rangeMax))
 
-    rangeSelected = []#Lista con i valori del range scelto
-    rangeTempSelected = [element for element in data[:, 0]]#Lista temporanea di tutti i range
+    rangeSelected = []#Lista con i timestamp nel range scelto
+    rangeTempSelected = [element for element in data[:, 0]]#Lista temporanea di tutti i timestamp
     index = []#Indice del range
     averageTemp = [element for element in data[:, 1]]#Lista temporanea di tutte le medie
     average = []#Lista con le medie all'interno del range
 
     #Loop per trovarmi i valori del range scelto e per salvare i loro indici 
-    for element in rangeTempSelected:
-        print("Elemento corrente %f" %element)
+    for element,elemAvg in zip(rangeTempSelected,averageTemp):
         if(rangeMin<=element<=rangeMax):
             rangeSelected.append(element)
             index.append(rangeTempSelected.index(element))
+            average.append(elemAvg)# Lista con i valori medi nel range selezionato
             
-    
-   
   #  for elem in rangeSelected:# Loop per prenderere elementi dal range selezionato
   #      for i in index:# Loop per prenderere elementi dall'indice del range
   #          if(elem == rangeTempSelected[i]):# Se l'elemento preso è uguale all'elemento i-esimo nella lista temporanea di tutti range
@@ -97,11 +95,18 @@ def barGraphAvgLFandRG(rangeMin,rangeMax):
   #                  if(elemAvg == averageTemp[i]): # Se l'elemento preso è nell' iesima posizione abbiamo che la media ha lo stesso indice dell'indice del range
   #                      average.append(elemAvg)# Lista con i valori medi nel range selezionato
 
-    for elem,i in zip(rangeSelected,index):# Loop per prenderere elementi dal range selezionato e elementi dall'indice del range
-        if(elem == rangeTempSelected[i]):# Se l'elemento preso è uguale all'elemento i-esimo nella lista temporanea di tutti range
-            for elemAvg in averageTemp:# Loop per prendere elementi dalla lista di tutte le medie
-                if(elemAvg == averageTemp[i]):# Se l'elemento preso è nell' iesima posizione abbiamo che la media ha lo stesso indice dell'indice del range
-                    average.append(elemAvg)# Lista con i valori medi nel range selezionato
+    #for elem,i in zip(rangeSelected,index):# Loop per prenderere elementi dal range selezionato e elementi dall'indice del range
+    #    if(elem == rangeTempSelected[i]):# Se l'elemento preso è uguale all'elemento i-esimo nella lista temporanea di tutti range
+    #       for elemAvg in averageTemp:# Loop per prendere elementi dalla lista di tutte le medie
+    #            if(elemAvg == averageTemp[i]):# Se l'elemento preso è nell' iesima posizione abbiamo che la media ha lo stesso indice dell'indice del range
+    #                average.append(elemAvg)# Lista con i valori medi nel range selezionato
+
+    #for elemAvg in averageTemp:# Loop per prenderere elementi dal range selezionato e elementi dall'indice del range
+    #    for i in index:
+    #        if(elemAvg == averageTemp[i]):# Se l'elemento preso è nell' iesima posizione abbiamo che la media ha lo stesso indice dell'indice del range
+    #            print(averageTemp[i])
+    #            average.append(elemAvg)# Lista con i valori medi nel range selezionato
+
     #Print
     print(rangeSelected)
     print(index)
@@ -134,7 +139,7 @@ def barGraphAvgLFandRG(rangeMin,rangeMax):
     plt.grid()
     plt.show()
 
-#COmmento
+# Funzione che restituisce il grafico della media dell'occhio sinistro e destro combinati per ogni scena di durata scelta
 def barGraphEachScene(durScene):
     dataFrame = pd.read_csv('out/pupil.csv')             # Lettura del file .csv e salvataggio del dataframe
     data = dataFrame.iloc[:, [0,3]].values                 # Prendo i valori che mi serviranno dal dataframe
