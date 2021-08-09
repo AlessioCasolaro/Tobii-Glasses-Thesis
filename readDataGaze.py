@@ -11,13 +11,21 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
 #Funzione per stampare il file pupil.csv sulla console
-def readFileFix():
+def readFileFix(): #cambiare nome
     csv_file = 'out/pupil.csv'
     data = pd.read_csv(csv_file)
     print(data)
     csv_file2 = 'out/pupilsStatistics.csv'
     data2 = pd.read_csv(csv_file2)
     print(data2)
+
+#***********************************************************************************#
+#Funzione per stampare il file fixation.csv sulla console
+def readFileFixation():
+    csv_file = 'out/fixation.csv'
+    data = pd.read_csv(csv_file)
+    print(data)
+#***********************************************************************************#
 
 # Funzione utilizzata per leggere i dati del file gazedata.gz e scrivere un nuovo file .csv
 def readData(char):
@@ -71,9 +79,8 @@ def readData(char):
                 positionX.append(gaze2d[0])  # lista coordinata x
                 positionY.append(gaze2d[1])  # lista coordinata y
                 positionZ.append(gaze3d[2])  # lista coordinata z
-            
-            
        
+
         # for per iterare su ciascun diametro di ogni istante
         for diamLF,diamRG in zip(eyeLFdiameter,eyeRGdiameter):
             averageLFRG.append(averageLeftAndRight(diamLF,diamRG))#Calcolo media per ogni istante
@@ -118,10 +125,34 @@ def readData(char):
         cvs.close()  # Chiusura del file
 
 
-#FUNZIONE PER STAMPARE FISSAZIONI
+        #*********************************************************************************************************#
+        #Richiamo la fnuzione fixation per computare le fissazioni
+        Efix1 = fixation(positionX, positionY, positionZ, time)
+        res1 = [i[0] for i in Efix1]    #restituisce il numero d fissazioni
+        res2 = [i[1] for i in Efix1]    #restituisce il tempo iniziale
+        res3 = [i[2] for i in Efix1]    #restituisce la durata
+        res4 = [i[3] for i in Efix1]    #restituisce la posizione x
+        res5 = [i[4] for i in Efix1]    #restituisce la posizione y
+        res6 = [i[5] for i in Efix1]    #restituise la posizione z
 
+        #fields è una lista avente i nomi dei campi del nuovo file csv
+        fields = ['numeroFissazioni', 'startTime', 'duration', 'position_x', 'position_y', 'position_z']
 
-#CREARE FUNZIONE PER GENERARE FISSAZIONI
+        #creazione e d apertura del file fixation.csv
+        with open('out/fixation.csv', 'w', newline="") as csv:
+
+            #w è una dictionary con i campi della lista fields
+            w = csv.DictWriter(csv, fieldnames=fields)
+            w.writeheader()
+
+            #loop per inserirre i valori delle liste nei campi del dictionary
+            for n, s, du, x , y, z in zip(res1, res2, res3, res5, res5, res6):
+                raw = {'numeroFissazioni': n, 'startTime': s, 'dutation': du, 'position_x': x, 'position_y': y, 'position_z': z}
+                w.writerow(raw)
+
+        readFileFixation()
+        csv.close
+        #**********************************************************************************************************#
 
 
 # Funzione per creare e visualizzare il grafico delle fissazioni
@@ -133,10 +164,10 @@ def graficFix(nImg, scene):
     # Salvo in un dataFrame il file letto
     dataFrame = pd.read_csv(csv_file)
     # Salvo in un array i valori dei campi che dovrò utilizzare
-    data = dataFrame.iloc[:, [1, 2, 3]].values
+    data = dataFrame.iloc[:, [1, 2, 3,]].values #4, 5
     s = 1
     time = [element for element in data[:, 0]]
-    z1 = [element for element in data[: ,2]]
+    z1 = [element for element in data[: ,2]] #4
     time2 = []
     smin = 0
     w=0
