@@ -1,8 +1,9 @@
-import csv
+import csv as cs
 import gzip
 import json
 import pandas as pd
 import matplotlib
+
 
 from fixatDetection import *
 from fixColor import *
@@ -11,7 +12,7 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
 #Funzione per stampare il file pupil.csv sulla console
-def readFileFix(): #cambiare nome
+def readFilePupil(): 
     csv_file = 'out/pupil.csv'
     data = pd.read_csv(csv_file)
     print(data)
@@ -94,10 +95,10 @@ def readData(char):
         fields = ['Timestamp','EyeLeftDiameter','EyeRightDiameter','AverageLeftAndRight']
 
         # Creazione e apertura del file di nome pupil.csv
-        with open('out/pupil.csv', 'w', newline="") as cvs:
+        with open('out/pupil.csv', 'w', newline="") as cvsPupil:
 
             # w è una dictionary con i campi della lista fields
-            w = csv.DictWriter(cvs, fieldnames=fields, delimiter=',')
+            w = cs.DictWriter(cvsPupil, fieldnames=fields, delimiter=',')
             w.writeheader()
 
             # Loop per inserire i valori delle liste nei campi del dictionary
@@ -106,13 +107,13 @@ def readData(char):
                w.writerow(raw)
             
         # Apertura del file di nome pupil.csv in modalità append
-        with open('out/pupilsStatistics.csv', 'w', newline="") as csvfile:
+        with open('out/pupilsStatistics.csv', 'w', newline="") as csvPupilStat:
 
             # fieldnames è una lista avente i nomi dei campi per l'append
             fieldnames = ['TotalAverageLeft','TotalAverageRight','TotalAverageLFandRG','MinDiameterLeft','MinDiameterRight','MaxDiameterLeft','MaxDiameterRight','AvgDilatationSpeedLeft','AvgDilatationSpeedRight']
 
             # writer è una dictionary con i campi della lista fieldnames
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer = cs.DictWriter(csvPupilStat, fieldnames=fieldnames)
             writer.writeheader()
             
             # Inserisco i valori nei campi del dictionary
@@ -121,8 +122,8 @@ def readData(char):
             'MinDiameterRight':minAndMaxDiameter[1],'MaxDiameterLeft':minAndMaxDiameter[2],'MaxDiameterRight':minAndMaxDiameter[3],
             'AvgDilatationSpeedLeft':avgDilatationSpeedLF,'AvgDilatationSpeedRight':avgDilatationSpeedRG})
 
-        readFileFix()
-        cvs.close()  # Chiusura del file
+        readFilePupil()
+        csvPupilStat.close()  # Chiusura del file
 
 
         #*********************************************************************************************************#
@@ -139,19 +140,19 @@ def readData(char):
         fields = ['numeroFissazioni', 'startTime', 'duration', 'position_x', 'position_y', 'position_z']
 
         #creazione e d apertura del file fixation.csv
-        with open('out/fixation.csv', 'w', newline="") as csv:
+        with open('out/fixation.csv', 'w', newline="") as csvFix:
 
             #w è una dictionary con i campi della lista fields
-            w = csv.DictWriter(csv, fieldnames=fields)
+            w = cs.DictWriter(csvFix, fieldnames=fields)
             w.writeheader()
 
             #loop per inserirre i valori delle liste nei campi del dictionary
-            for n, s, du, x , y, z in zip(res1, res2, res3, res5, res5, res6):
-                raw = {'numeroFissazioni': n, 'startTime': s, 'dutation': du, 'position_x': x, 'position_y': y, 'position_z': z}
+            for n, s, du, x , y, z in zip(res1, res2, res3, res4, res5, res6):
+                raw = {'numeroFissazioni': n, 'startTime': s, 'duration': du, 'position_x': x, 'position_y': y, 'position_z': z}
                 w.writerow(raw)
 
         readFileFixation()
-        csv.close
+        csvFix.close
         #**********************************************************************************************************#
 
 
