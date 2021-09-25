@@ -23,80 +23,32 @@ def blinkDetect():
     times = [element for element in data[:, 0]]
     eyeLF = [element for element in data[:, 1]]
     eyeRG = [element for element in data[:, 2]]
-    temp = []
-    temp2 = []
-    Matrix = [[0 for x in range(20)] for y in range(20)] 
-    timesStartBlink = []
-    timesEndBlink = []
-    count = 0
-    h=0
-  
 
-    for i, lf in enumerate(eyeLF):
-        if(eyeLF[i] == 0):
-            Matrix[h][0]
-        while eyeLF[i] == 0:
-            i+=1
-        Matrix[h][1] = i-1
-        h+=1
-        count+=1
+    last_was_0=False
+    zero_clusters=[]
 
-    print("blink: %d\n", count)
-
-    for i in range(0,count,1):
-        print("inizio fine: %d\t%d\n", Matrix[i][0], Matrix[i][1])
-
-    
-    #for lf,rg,i in zip(eyeLF,eyeRG,range(0,len(times),1)):
-    
-        #if (lf == rg == 0):
-            #timesStartBlink.append(times[i])
-
-          #  while lf == rg == 0:
-                #i+=1
-
-           # timesEndBlink.append(times[i-1])
-
-            
-
-          #  count+=1
-        
-    
-
-   # print("blink: %d\n", count)
-  #  print("inizio fone: %d\t%d\n", timesStartBlink,timesEndBlink)
-
-
-
-
-
-
-   
-        #if(lf==rg==0 and numpy.arange(time,time*1,33)):
-            #temp.append(time)
-            #print(time)
-        #else:
-            #timesStartBlink.append(temp[0])
-           # timesEndBlink.append(temp[len(temp)-1])
-            #temp.clear()
-           
-
-
-
+    for i in range(len(eyeLF)):
+        a=eyeLF[i]
+        if eyeLF[i] == 0 and eyeRG[i] == 0:
+            if last_was_0:
+                zero_clusters[-1][-1]+=1
+            else:
+                zero_clusters.append([i, i])
+        last_was_0 = a == 0
 
      # Apertura del file di nome pupil.csv in modalità append
     with open('out/blinkDetected.csv', 'w', newline="") as csvBlink:
 
         # fieldnames è una lista avente i nomi dei campi per l'append
-        fieldnames = ['Time start','Time end']
+        fieldnames = ['Blink Count','Time start','Time end']
         # writer è una dictionary con i campi della lista fieldnames
         writer = cs.DictWriter(csvBlink, fieldnames=fieldnames)
         writer.writeheader()
             
         #Loop per inserire i valori
-        for timeS,timeE in zip(timesStartBlink,timesEndBlink):
+        for i in range(len(zero_clusters)):
             # Inserisco i valori nei campi del dictionary
-            writer.writerow({'Time start': timeS, 'Time end':timeE})
+            writer.writerow({'Blink Count':i+1, 'Time start': times[zero_clusters[i][0]], 'Time end':times[zero_clusters[i][1]]})
 
     csvBlink.close()  # Chiusura del file
 

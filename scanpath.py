@@ -5,6 +5,7 @@ import json
 import pandas as pd
 import matplotlib
 import numpy
+import cv2 
 
 
 
@@ -49,16 +50,17 @@ COLS = {	"butter": [	'#fce94f',
         }
 def drawScanpath(imagefile=None, alpha=0.5, savefilename=None):
 
-    # dati del grafico fixation
+     # dati del grafico fixation
     csv_file = 'out/fixation.csv'
     # Salvo in un dataFrame il file letto
     dataFrame = pd.read_csv(csv_file)
     # Salvo in un array i valori dei campi che dovrò utilizzare
-    data = dataFrame.iloc[:, [0,2, 3, 4]].values
+    data = dataFrame.iloc[:, [0,1,2, 3, 4]].values
     numFix = [element for element in data[:, 0]]
-    dur = [element for element in data[:, 1]]
-    posX = [element for element in data[: ,2]]
-    posY = [element for element in data[: ,3]]
+    start = [element for element in data[:, 1]]
+    dur = [element for element in data[:, 2]]
+    posX = [element for element in data[: ,3]]
+    posY = [element for element in data[: ,4]]
     posXPix = []
     posYPix = []
     durS = []
@@ -75,11 +77,12 @@ def drawScanpath(imagefile=None, alpha=0.5, savefilename=None):
     for d in dur:
         durS.append(d*300)
     
-    #Disegna le fissazioni
+     #Disegna le fissazioni
     ax.scatter(posXPix,posYPix, durS)
-    #Disegna le annotazioni, i numeri delle fissazioni
+     #Disegna le annotazioni, i numeri delle fissazioni
     for i in range(len(numFix)):
         ax.annotate(str(i+1), (posXPix[i],posYPix[i]), color=COLS['aluminium'][5], alpha=1, horizontalalignment='center', verticalalignment='center', multialignment='center')
+     
 
     #Creazione saccadi
     for x, y,i in zip(posXPix,posYPix,range(len(numFix)-1)):
@@ -91,7 +94,9 @@ def drawScanpath(imagefile=None, alpha=0.5, savefilename=None):
     #Salva l'immagine col nome assegnato
     if savefilename != None:
         fig.savefig(savefilename)
+    plt.close('all')
     return fig
+    
 
 #Funzioni di aiuto
 def to_pixel_coords(coord,dimension):
@@ -132,3 +137,23 @@ def draw_display(imagefile=None):
     ax.imshow(screen)
     
     return fig, ax
+
+def getVideoFrame(path):
+    # Opens the Video file
+    cap= cv2.VideoCapture(path)
+    i=1
+    currentframe=0
+    while(cap.isOpened()):
+        ret, frame = cap.read()
+        if ret == False:
+            break
+        if i%120 == 0:
+            name = './frames/frame' + str(currentframe) + '.jpg'
+            print ('Captured...' + name)
+            cv2.imwrite(name,frame)
+            currentframe += 1
+        i+=1
+    
+    cap.release()
+    cv2.destroyAllWindows()
+
