@@ -50,7 +50,7 @@ COLS = {	"butter": [	'#fce94f',
         }
 def drawScanpath(imagefile=None, alpha=0.5, savefilename=None):
 
-     # dati del grafico fixation
+    # dati del grafico fixation
     csv_file = 'out/fixation.csv'
     # Salvo in un dataFrame il file letto
     dataFrame = pd.read_csv(csv_file)
@@ -66,7 +66,9 @@ def drawScanpath(imagefile=None, alpha=0.5, savefilename=None):
     durS = []
 
     #Chiamo la funzione per trasformare da posizione schermo normalizzata ([0,0] a [1,1]) in pixel
-    for x,y in zip(posX,posY):
+    for x,y,d,s in zip(posX,posY,dur,start):
+
+        
         posXPix.append(to_pixel_coords(x,1920))
         posYPix.append(to_pixel_coords(y,1080))
         
@@ -74,8 +76,7 @@ def drawScanpath(imagefile=None, alpha=0.5, savefilename=None):
     fig, ax = draw_display(imagefile=imagefile)
 
     #Crea una lista di durate utile per la dimensione dei cerchi dello scanpath
-    for d in dur:
-        durS.append(d*300)
+    durS.append(d*300)
     
      #Disegna le fissazioni
     ax.scatter(posXPix,posYPix, durS)
