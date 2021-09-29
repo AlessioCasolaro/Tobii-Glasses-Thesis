@@ -51,7 +51,7 @@ def generateScanpath(path):
                 #Posiziono l'elemento scansionato in una lista temporanea utile a ridisegnare i cerchi precedenti
                 Xtemp.append(x)
                 Ytemp.append(y)
-                for a, b, dT, i in zip(Xtemp, Ytemp, durTemp, range(len(Xtemp) - 1)):
+                for a, b, i in zip(Xtemp, Ytemp, range(len(Xtemp) - 1)):
                     #Ridisegno i cerchi precedenti
                     cv2.circle(frame, (int(a), int(b)), 10, (255, 0, 0), -1)
 
@@ -61,8 +61,6 @@ def generateScanpath(path):
                     # cv2.putText(frame, str(i), (posXPix[i], posYPix[i]), cv2.FONT_HERSHEY_DUPLEX, 0.8, (0, 255, 0), 2, cv2.LINE_AA)
                 cv2.imshow('test', frame)
                 cv2.waitKey(1000)
-                # Se finisce il video oppure digito 'q' allora chiude la finestra del video
-
         count += 1
             
     cap.release()

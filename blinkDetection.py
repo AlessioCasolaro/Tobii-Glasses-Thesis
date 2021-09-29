@@ -93,7 +93,7 @@ def blinkGrafics(min, sup):
     # Dettagli del grafico
     plt.subplots_adjust(bottom= 0.2, top = 0.98)# Regola i margini
     plt.ylabel('End time',fontweight='bold', fontsize=15)
-    plt.xlabel('Intervallo',fontweight='bold', fontsize=15)
+    plt.xlabel('Intervallo fissazione',fontweight='bold', fontsize=15)
     fig.savefig('grafic/graficBlinkDuration.jpg')
     plt.grid()
     plt.show()
