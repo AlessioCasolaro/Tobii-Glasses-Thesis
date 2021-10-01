@@ -1,5 +1,7 @@
 import cv2
 import pandas as pd
+import tkinter as tk
+import keyboard
 
 def generateScanpath(path):
     # dati del grafico fixation
@@ -18,23 +20,29 @@ def generateScanpath(path):
     times = []
     Xtemp = []
     Ytemp = []
-    durTemp = []
+    flag = False#Utile per interrompere il video
+    
 
     #Formatto i Tempi
     for s, d in zip(start, dur):
         times.append(float("{:.1f}".format(s + d)))  # Secondi
 
+    #Acquisisco la grandezza del display
+    root = tk.Tk()#Libreria tkinter 
+    displayWidth = root.winfo_screenwidth()
+    displayHeight = root.winfo_screenheight()
+
     #Formatto x,y per avere le coordinate in pixel
     for x, y in zip(posX, posY):
-        posXPix.append(round(x * 1920))#Da cambiare acquisendo il formato del monitor utilizzato
-        posYPix.append(round(y * 1080))
+        posXPix.append(round(x * displayWidth))
+        posYPix.append(round(y * displayHeight))
 
 
-    vid_filename = path
+    vid_filename = path #Il video utilizzato, specificato nel main
 
     cap = cv2.VideoCapture(vid_filename)
     count = 1
-    fps = int(cap.get(cv2.CAP_PROP_FPS))
+    fps = int(cap.get(cv2.CAP_PROP_FPS)) #Salvo il numero di fps del video
     i = 0
 
     while cap.isOpened():
@@ -61,7 +69,17 @@ def generateScanpath(path):
                     # cv2.putText(frame, str(i), (posXPix[i], posYPix[i]), cv2.FONT_HERSHEY_DUPLEX, 0.8, (0, 255, 0), 2, cv2.LINE_AA)
                 cv2.imshow('test', frame)
                 cv2.waitKey(1000)
+                #Comando per bloccare l'esecuzione dei cicli e la creazione dello scanpath sul video
+                if keyboard.is_pressed('q'):
+                    print('Video interrotto.')
+                    flag = True#Setto il flag a true
+                    break
+            if flag == True:#Ci entro solo se è stato premuto il tasto q, faccio terminare i cicli
+                break        
+                    
         count += 1
             
     cap.release()
+    if flag == True:#Ci entro solo se è stato premuto il tasto q, chiudo il video
+        cv2.destroyAllWindows() 
         
