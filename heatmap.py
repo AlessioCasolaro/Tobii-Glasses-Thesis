@@ -5,6 +5,7 @@ import matplotlib.image as mpimg
 import pandas as pd
 import tkinter as tk
 import cv2
+import PySimpleGUI as sg
 
 precision = 200  # Precisione
 edge = 200 / 6  # Smussa gli angoli di calore
@@ -74,7 +75,9 @@ def draw_heatmap():
 
     # Inverte gli assi, necessario su Windows e macOs
     ax.invert_yaxis()
-    fig.savefig("out/Heatmap/heatmap.jpg")  # Salvo l'immagine
+    fig.savefig("out/Heatmap/heatmap.png")  # Salvo l'immagine
+
+    event, values = sg.Window('Heatmap', [[sg.Image(filename='out/Heatmap/heatmap.png')]]).read(close=True)
     return fig
 
 

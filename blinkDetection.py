@@ -12,7 +12,7 @@ from fixColor import *
 from pupil import *
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
-
+import PySimpleGUI as sg
 
 def blinkDetect():
     # dati del file pupil.csv
@@ -94,6 +94,8 @@ def blinkGrafics(min, sup):
     plt.subplots_adjust(bottom= 0.2, top = 0.98)# Regola i margini
     plt.ylabel('End time',fontweight='bold', fontsize=15)
     plt.xlabel('Intervallo fissazione',fontweight='bold', fontsize=15)
-    fig.savefig('grafic/graficBlinkDuration.jpg')
+    fig.savefig('grafic/graficBlinkDuration.png')
     plt.grid()
+
+    event, values = sg.Window('Dettagli grafico', [[sg.Image(filename='grafic/graficBlinkDuration.png')]]).read(close=True)
     plt.show()

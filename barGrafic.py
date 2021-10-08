@@ -5,21 +5,21 @@ import numpy as np
 import matplotlib.pyplot as plt
 from dbscan import *
 from aoi import *
+import PySimpleGUI as sg
 
 
 # Funzione usata per scegliere il tipo di grafico che si vuole andare a creare e visualizzare
 def chooseGraph(char,scene):
     while True:
-        print('''Quale grafico vuoi creare e visualizzare?
+
+        #choose = input("Digita l'opzione scelta: ")
+        choose = sg.popup_get_text('''Quale grafico vuoi creare e visualizzare?
         1. Grafico a barre per la media dell'occhio sinistro e destro nel tempo
         2. Grafico a barre per la media dell'occhio sinistro e destro per ogni scena
-        NO. Grafico a barre per il numero di fissazioni nel tempo
-        NO. Grafico a barre per il numero di aree di interesse nel tempo
-        NO. Grafico a barre per l' AOI dominante nel tempo
-        5. Torna al menu precedente
-        ''')
-
-        choose = input("Digita l'opzione scelta: ")
+        3. Grafico a barre per il numero di fissazioni nel tempo
+        4. Grafico a barre per il numero di aree di interesse nel tempo
+        5. Grafico a barre per l' AOI dominante nel tempo
+        ''', 'Creazione grafici a barre')
         if choose == str(1):
             rangeMin,rangeMax = openGazeData(char,1)
             barGraphAvgLFandRG(rangeMin,rangeMax)
@@ -27,15 +27,19 @@ def chooseGraph(char,scene):
             durScene = openGazeData(char,2)
             barGraphEachScene(durScene)
         elif choose == str(3):
-            print("Numero di aree di interesse nel tempo")
-            inter, listTime = openGazeData(char,choose)
-            barGraphAoi(inter,listTime)
+            print("Numero di fissazioni nel tempo")
+            inter, listTime = openGazeData(char,3)
+            barGraphFix(inter,listTime)
         elif choose == str(4):
+            print("Numero di aree di interesse nel tempo")
+            inter, listTime = openGazeData(char,3)
+            barGraphAoi(inter,listTime)
+        elif choose == str(5):
             print("Aoi dominante nel tempo")
             timePoint = readAoiDbscan2(scene)
-            inter, listTime = openGazeData(char,choose)
+            inter, listTime = openGazeData(char,4)
             barGraphAoiDominant(listTime, timePoint)
-        elif choose == str(5):
+        elif choose == "":
             break
         else:
             print("Numero o parola inserita non valida. ")
@@ -53,17 +57,39 @@ def openGazeData(char,choose):
             timestamp = d.get('timestamp')
             time.append(timestamp)
         
+
         if(choose == 1):
-            print("Scegli un intervallo di tempo tra %s e %s:" % (time[0],time[len(time)-1]))
-            rangeMin = float(input("Digita intervallo minore: "))
-            rangeMax = float(input("Digita intervallo Maggiore: "))
+            msg = "Scegli un intervallo di tempo tra " + str(time[0]) + " e " + str(time[len(time)-1])
+            rangeMin = float(sg.popup_get_text(message=msg + " \nInserisci l'intervallo di tempo inferiore" ,title="Media dell'occhio sinistro e destro nel tempo"))
+            rangeMax = float(sg.popup_get_text("Inserisci l'intervallo di tempo superiore","Media dell'occhio sinistro e destro nel tempo"))
+            
             print(rangeMin,rangeMax)
             return rangeMin,rangeMax
         elif(choose == 2):
-            print("Scegli la durata di ogni scena:")
-            dur = float(input("Digita la durata: "))
+            msg = "Scegli la durata di ogni scena:"
+            dur = float(sg.popup_get_text(message=msg + "\nInserisci la durata della scena" ,title="Media dell'occhio sinistro e destro per ogni scena"))
             print(dur)
             return dur
+        elif(choose == 3) or (choose == 4) or (choose == 5):
+            # L'utente deve scegliere quanti intervalli temporali vuole
+            listTime = []
+            listTime.append(0)
+            inter = []
+            num = int((sg.popup_get_text(message="Inserisci il numero di intervalli" ,title="Numero di fissazioni nel tempo")))
+            print(num)
+            for i in range(num):
+                for j in time:
+                    maxTime = round(j, 1)
+                msg = "Scegli tra " + str(listTime[i-1]) + " e " + str(maxTime)
+                
+                if i == num - 1:
+                    helpTime = maxTime
+                else:
+                    helpTime = float((sg.popup_get_text(message=msg + "\nInserisci" ,title="Numero di fissazioni nel tempo")))
+                numTime = (str(listTime[i]) + '-' + str(helpTime))
+                listTime.append(helpTime)
+                inter.append(numTime)
+            return inter, listTime
 
 
 
@@ -86,31 +112,7 @@ def barGraphAvgLFandRG(rangeMin,rangeMax):
         if(rangeMin<=element<=rangeMax):
             rangeSelected.append(element)
             index.append(rangeTempSelected.index(element))
-            average.append(elemAvg)# Lista con i valori medi nel range selezionato
-            
-  #  for elem in rangeSelected:# Loop per prenderere elementi dal range selezionato
-  #      for i in index:# Loop per prenderere elementi dall'indice del range
-  #          if(elem == rangeTempSelected[i]):# Se l'elemento preso è uguale all'elemento i-esimo nella lista temporanea di tutti range
-  #              for elemAvg in averageTemp: # Loop per prendere elementi dalla lista di tutte le medie
-  #                  if(elemAvg == averageTemp[i]): # Se l'elemento preso è nell' iesima posizione abbiamo che la media ha lo stesso indice dell'indice del range
-  #                      average.append(elemAvg)# Lista con i valori medi nel range selezionato
-
-    #for elem,i in zip(rangeSelected,index):# Loop per prenderere elementi dal range selezionato e elementi dall'indice del range
-    #    if(elem == rangeTempSelected[i]):# Se l'elemento preso è uguale all'elemento i-esimo nella lista temporanea di tutti range
-    #       for elemAvg in averageTemp:# Loop per prendere elementi dalla lista di tutte le medie
-    #            if(elemAvg == averageTemp[i]):# Se l'elemento preso è nell' iesima posizione abbiamo che la media ha lo stesso indice dell'indice del range
-    #                average.append(elemAvg)# Lista con i valori medi nel range selezionato
-
-    #for elemAvg in averageTemp:# Loop per prenderere elementi dal range selezionato e elementi dall'indice del range
-    #    for i in index:
-    #        if(elemAvg == averageTemp[i]):# Se l'elemento preso è nell' iesima posizione abbiamo che la media ha lo stesso indice dell'indice del range
-    #            print(averageTemp[i])
-    #            average.append(elemAvg)# Lista con i valori medi nel range selezionato
-
-    #Print
-    print(rangeSelected)
-    print(index)
-    print(average)   
+            average.append(elemAvg)# Lista con i valori medi nel range selezionato 
  
     numBar = np.arange(len(average))
     # Genera Le barre
@@ -129,15 +131,17 @@ def barGraphAvgLFandRG(rangeMin,rangeMax):
                     ha='center', va='bottom', rotation=90)
     autolabel(bar_plot)
 
-    
-
     # Dettagli del grafico
     plt.subplots_adjust(bottom= 0.2, top = 0.98)# Regola i margini
     plt.ylabel('Media occhio DX e SX',fontweight='bold', fontsize=15)
     plt.xlabel('Intervallo',fontweight='bold', fontsize=15)
-    fig.savefig('grafic/graficAverageLeftAndRight.jpg')
+    fig.savefig('grafic/graficAverageLeftAndRight.png')
     plt.grid()
+
+    event, values = sg.Window('Dettagli grafico', [[sg.Image(filename='grafic/graficAverageLeftAndRight.png')]]).read(close=True)
+  
     plt.show()
+    
 
 # Funzione che restituisce il grafico della media dell'occhio sinistro e destro combinati per ogni scena di durata scelta
 def barGraphEachScene(durScene):
@@ -189,8 +193,10 @@ def barGraphEachScene(durScene):
     plt.subplots_adjust(bottom= 0.2, top = 0.98)# Regola i margini
     plt.ylabel('Media occhio DX e SX',fontweight='bold', fontsize=15)
     plt.xlabel('Intervallo',fontweight='bold', fontsize=15)
-    fig.savefig('grafic/graficAverageLeftAndRight.jpg')
+    fig.savefig('grafic/graficAverageLeftAndRight.png')
     plt.grid()
+
+    event, values = sg.Window('Dettagli grafico', [[sg.Image(filename='grafic/graficAverageLeftAndRight.png')]]).read(close=True)
     plt.show()
 
 
@@ -227,7 +233,9 @@ def barGraphFix(inter,listTime):
     plt.ylabel('Numero di Fissazioni',fontweight='bold', fontsize=15)
     plt.xlabel('Intervalli (s)',fontweight='bold', fontsize=15)
     plt.title('Grafico Numero di Fissazioni')
-    fig.savefig('grafic/graficNumFissazioni.jpg')
+    fig.savefig('grafic/graficNumFissazioni.png')
+
+    event, values = sg.Window('Dettagli grafico', [[sg.Image(filename='grafic/graficNumFissazioni.png')]]).read(close=True)
     plt.show()
 
 # Funzione che restituisce il grafico del numero di Aoi.
@@ -270,7 +278,9 @@ def barGraphAoi(inter,listTime):
     plt.ylabel('Numero di Aree di Interesse',fontweight='bold', fontsize=15)
     plt.xlabel('Intervalli (s)',fontweight='bold', fontsize=15)
     plt.title('Grafico Aree di interesse')
-    fig.savefig('grafic/graficAoi.jpg')
+    fig.savefig('grafic/graficAoi.png')
+
+    event, values = sg.Window('Dettagli grafico', [[sg.Image(filename='grafic/graficAoi.png')]]).read(close=True)
     plt.show()
 
 # Funzione che mi restituisce un grafico con gli aoi dominanti per ogni intervallo
@@ -342,6 +352,8 @@ def barGraphAoiDominant(listTime, timePoint):
     plt.grid(axis='y')
     plt.legend()
     plt.title('Grafico Aoi Dominante\n(Dbscan)')
-    fig.savefig('grafic/graficAOIDominante.jpg')
+    fig.savefig('grafic/graficAOIDominante.png')
+
+    event, values = sg.Window('Dettagli grafico', [[sg.Image(filename='grafic/graficAOIDominante.png')]]).read(close=True)
     plt.show()
 

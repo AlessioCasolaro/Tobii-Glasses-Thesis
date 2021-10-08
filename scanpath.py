@@ -67,7 +67,7 @@ def generateScanpath(path):
                     # Creazione frecce che uniscono saccadi di inizio e fine
                     cv2.line(frame, (Xtemp[i], Ytemp[i]), (Xtemp[i + 1], Ytemp[i + 1]), (238, 238, 238), 2)
                     # cv2.putText(frame, str(i), (posXPix[i], posYPix[i]), cv2.FONT_HERSHEY_DUPLEX, 0.8, (0, 255, 0), 2, cv2.LINE_AA)
-                cv2.imshow('test', frame)
+                cv2.imshow('Scanpath', frame)
                 cv2.waitKey(1000)
                 #Comando per bloccare l'esecuzione dei cicli e la creazione dello scanpath sul video
                 if keyboard.is_pressed('q'):
