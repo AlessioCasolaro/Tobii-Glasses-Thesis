@@ -10,6 +10,7 @@ from barGrafic import *
 from scanpath import *
 from blinkDetection import *
 from heatmap import *
+from online import *
 
 def main():
     ##############################################################################
@@ -165,6 +166,9 @@ def main():
                 extractMiddleFrame(pathVideo)
                 print("Generazione Heatmap")
                 draw_heatmap()
+
+            elif event == "-KEY10-":
+                streaming()
 
     window.close()
 
