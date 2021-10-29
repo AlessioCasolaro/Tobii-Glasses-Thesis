@@ -1,3 +1,9 @@
+##############################################################################
+# Progetto di tesi sul dispositivo Tobii Pro Glasses 3
+# Realizzato da Alessio Casolaro, Giulio Triggiani
+#
+# Relatori Prof.Andrea Francesco Abate, Dott.ssa Lucia Cimmino, Dott.ssa Lucia Cascone 
+##############################################################################
 from sys import path
 import PySimpleGUI as sg
 import os
@@ -39,6 +45,7 @@ def main():
             7. Creazione del file blinkDetected.csv
             8. Generazione grafico Blink in intervallo di tempo
             9. Creazione Heatmap
+            10.Scanpath Real-time
             '''
 
 
@@ -61,9 +68,7 @@ def main():
         sg.Button("Funzione 8", key="-KEY8-",size=(10,1))],
 
         [sg.Button("Funzione 9", key="-KEY9-",size=(10,1)),
-        sg.Button("Funzione 10", key="-KEY10-",size=(10,1)),
-        sg.Button("Funzione 11", key="-KEY11-",size=(10,1)),
-        sg.Button("Funzione 12", key="-KEY12-",size=(10,1))],
+        sg.Button("Funzione 10", key="-KEY10-",size=(10,1))],
     
     ]
 
@@ -167,7 +172,7 @@ def main():
                 print("Generazione Heatmap")
                 draw_heatmap()
 
-            elif event == "-KEY10-":
+            elif event == "-KEY10-":#Apertura streaming video
                 streaming()
 
     window.close()
