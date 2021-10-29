@@ -1,4 +1,3 @@
-# Tobii-Glasses-Thesis
 <h1 align = "center">  :computer: 🎓 Tobii Pro Glasses 3 🎓 :computer: </h1>
 
 <p align = "center"> A project for my internship at the VRLab. University of Salerno </p>
