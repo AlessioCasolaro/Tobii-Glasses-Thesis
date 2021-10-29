@@ -8,7 +8,7 @@
 
 ## How to run
 
-- Python 3.7 or above
+- Python 3.8 or above
 
 Then, follow these steps: 
 1. Clone this repository
