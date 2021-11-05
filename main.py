@@ -68,7 +68,8 @@ def main():
         sg.Button("Funzione 8", key="-KEY8-",size=(10,1))],
 
         [sg.Button("Funzione 9", key="-KEY9-",size=(10,1)),
-        sg.Button("Funzione 10", key="-KEY10-",size=(10,1))],
+        sg.Button("Funzione 10", key="-KEY10-",size=(10,1))
+        ],
     
     ]
 
@@ -174,7 +175,7 @@ def main():
 
             elif event == "-KEY10-":#Apertura streaming video
                 streaming()
-
+        
     window.close()
 
 
