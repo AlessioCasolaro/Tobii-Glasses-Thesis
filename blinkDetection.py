@@ -1,17 +1,11 @@
 import csv as cs
-import gzip
-import json
 import numpy as np
 import pandas as pd
-import matplotlib
 from pandas.core.frame import DataFrame
-
-
 from fixatDetection import *
 from fixColor import *
 from pupil import *
 import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
 import PySimpleGUI as sg
 
 def blinkDetect():

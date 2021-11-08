@@ -11,9 +11,20 @@
 - Python 3.8 or above
 
 Then, follow these steps: 
-1. Clone this repository
-2. Open "run.bat"
+1. Clone this repository.
+2. Open "run.bat".
+3. Select a video from "video" directory.
+4. Select the function you need.
 
+## Libraries
+- Matplotlib
+- OpenCV2
+- Pandas
+- Numpy
+- Keyboard
+- tkinter
+- PySimpleGUI
+- Request
 
 ### Authors
 * **Alessio Casolaro, Giulio Triggiani** - [AlessioCasolaro](https://github.com/AlessioCasolaro) - [GiulioTriggiani](https://github.com/GiulioTriggiani)

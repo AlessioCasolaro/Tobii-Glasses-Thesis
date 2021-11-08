@@ -7,6 +7,10 @@ import tkinter as tk
 import cv2
 import PySimpleGUI as sg
 
+
+####N.B se si utilizza Windows, nelle impostazioni dello schermo la voce 
+# "Modifica la dimensione di testo, app e altri elementi" deve essere impostata su 100%!!
+
 precision = 200  # Precisione
 edge = 200 / 6  # Smussa gli angoli di calore
 #Acquisisco la grandezza del display
