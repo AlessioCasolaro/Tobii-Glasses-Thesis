@@ -1,5 +1,4 @@
 # This file is part of PyGaze - the open-source toolbox for eye tracking
-
 # Funzione per creare le fissazioni, ha come parametri: valori x, valori y, valori z,
 # tempo, distanza Massima e durata minim di ogni fissazione
 def fixation(positionX, positionY, positionZ, time, maxDist=0.10, mindur=0.2):
