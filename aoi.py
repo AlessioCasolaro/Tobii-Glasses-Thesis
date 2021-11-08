@@ -1,10 +1,12 @@
 import csv
+from tkinter import Message
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import pandas as pd
-
+import PySimpleGUI as sg
 from kMean import *
 from dbscan import *
+from PIL import Image
 
 #Funzione per stampare il file aoi.csv sulla console
 def readFileAoi():
@@ -585,45 +587,36 @@ def graficAoiKmeans(scene, centerList,k):
             time2.clear()
 
 # Funzione utilizzata per scegliere il tipo di algoritmo che si vuole eseguire per trovare le Aoi
-def chooseAlgo(scene):
+def chooseAlgo(scene,choose):
     while True:
-        print('''Quale algoritmo vuoi eseguire per generare le aree di interesse?
-        1. K-means Clustering
-        2. DBscan clustering
-        3. Torna al menu precedente
-        ''')
-
-        choose = input("Digita l'opzione scelta: ")
 
         if choose == str(1):
-            print("Esecuzione del K-means")
-            print("Verranno mostrate le immagini acquisite dal video scelto. Saranno sovraimpresse le aree di interesse "
-                  "delle fissazioni catturate negli intervalli di tempo di ogni cambio scena. E' possibile che vengano mostrate immagini senza aree di interesse e di conseguenza "
-                  "fissazioni di colore giallo o senza fissazioni, ciò significherà che l'algoritmo non è stato eseguito in quanto il "
-                  "numero di fissazioni sono insufficienti. Il numero minimo di fissazioni per eseguire l'algoritmo è uguale al\n"
-                  "numero di cluster richiesti.")
-            h = input("Premere 's' per proseguire!\n")
-            if h == 's':
-                k = input("Quanti cluster vuoi generare:\n")
-
-                readAoiKmeans(scene,int(k))
-            else:
-                print("Hai inserito una lettera o parola non valida!")
-                break
+            k = sg.popup_get_text(title="AOI",message='''
+                Esecuzione del K-means
+                Verranno mostrate le immagini acquisite dal video scelto. Saranno sovraimpresse le aree di interesse
+                delle fissazioni catturate negli intervalli di tempo di ogni cambio scena. E' possibile che vengano mostrate immagini senza aree di interesse e di conseguenza
+                fissazioni di colore giallo o senza fissazioni, ciò significherà che l'algoritmo non è stato eseguito in quanto il
+                numero di fissazioni sono insufficienti. Il numero minimo di fissazioni per eseguire l'algoritmo è uguale al numero di cluster richiesti.\n
+                Quanti cluster vuoi generare:''')
+            
+            readAoiKmeans(scene,int(k))
+            
         elif choose == str(2):
-            print("Esecuzione del DBscan")
-            print("Verranno mostrate le immagini acquisite dal video scelto. Saranno sovraimpresse le aree di interesse "
-                  "delle fissazioni catturate negli intervalli di tempo di ogni cambio scena. E' possibile che vengano mostrate immagini senza aree di interesse e di conseguenza "
-                  "fissazioni di colore giallo o senza fissazioni. Il numero minimo di punti (fissazioni) e il raggio di ogni fissazione per creare un area di interesse "
-                  "è 3.")
-            h = input("Premere 's' per proseguire!\n")
-            if h == 's':
-                readAoiDbscan(scene)
-            else:
-                print("Hai inserito una lettera o parola non valida!")
-                break
+            print('''
+                Esecuzione del DBscan
+                Verranno mostrate le immagini acquisite dal video scelto. Saranno sovraimpresse le aree di interesse
+                delle fissazioni catturate negli intervalli di tempo di ogni cambio scena. E' possibile che vengano mostrate immagini senza aree di interesse e di conseguenza
+                fissazioni di colore giallo o senza fissazioni. Il numero minimo di punti (fissazioni) e il raggio di ogni fissazione per creare un area di interesse
+                è 3.''')
+    
+            readAoiDbscan(scene)
+            imgConv = Image.open(r'grafic/aoi0.jpg')
+            imgConv.save(r'grafic/aoi0.png')
+            event, values = sg.Window('Dettagli grafico AOI', [[sg.Image(filename='grafic/aoi0.png')]]).read(close=True)
+            break
 
         elif choose == str(3):
             break
         else:
             print("Numero o parola inserita non valida. ")
+    return choose

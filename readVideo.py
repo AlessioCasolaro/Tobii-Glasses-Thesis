@@ -1,5 +1,4 @@
 import cv2
-
 from readDataImu import *
 
 # Funzione per ridimensionare i frame del video
