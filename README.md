@@ -1,6 +1,6 @@
 <h1 align = "center">  :computer: 🎓 Tobii Pro Glasses 3 🎓 :computer: </h1>
 
-<p align = "center"> A project for my internship at the VRLab. University of Salerno </p>
+<p align = "center"> A project for my internship at the University of Salerno - VRLab.</p>
 
 <p> This project goal is to create a software to extend the controls of the Tobii Pro Glasses 3 device. </p>
    
