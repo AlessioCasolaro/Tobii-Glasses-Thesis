@@ -19,7 +19,7 @@ def streaming():
 			# Mostra i frame 
 			cv2.imshow('Tobii Pro Glasses 3 - Live Scene',frame)
 
-			# Comando per stoppare lo streaming video
+			# Comando per avviare la calibrazione
 			if cv2.waitKey(1) & 0xFF == ord('c'):
 				calibrate()
 				
