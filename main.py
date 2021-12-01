@@ -136,7 +136,10 @@ def main():
                 print(nameVideo)
                 readData(char)
                 pupilTableViewer(path = "out/pupil.csv",pathStats = "out/pupilsStatistics.csv")
-
+            
+            elif event == "-KEY2-":#Creazione/Visualizzazione dei grafici delle fissazioni
+                graficFix(char,durEachScen(char))
+            
             elif event == "-KEY3-": #AOI
                 print("Una area di interesse o AOI è una regione dele fissazioni identiche, per identiche intendiamo piccole distanze tra di loro nello spazio ) "
                             "ed viene utilizzata per estrarre metriche specifiche per quella regione. ")
